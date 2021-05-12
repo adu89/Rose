@@ -1,0 +1,3 @@
+[submodule "Rose/3rd/spdlog"]
+	path = Rose/3rd/spdlog
+	url = git@github.com:gabime/spdlog.git

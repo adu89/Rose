@@ -11,12 +11,12 @@ target_sources(
     ${PROJECT_NAME} PRIVATE ${SOURCES}
 )
 
-message(${CMAKE_SOURCE_DIR}/Rose)
-
 target_include_directories(${PROJECT_NAME} 
     PRIVATE 
         ${PROJECT_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/Rose/src
+        ${CMAKE_SOURCE_DIR}/Rose/3rd/spdlog/include
+
 )
 
 target_link_libraries(${PROJECT_NAME}
