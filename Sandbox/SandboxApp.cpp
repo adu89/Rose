@@ -1,4 +1,5 @@
 #include <Rose.h>
+
 class SandboxApp : public Rose::Application
 {
 public:

@@ -13,7 +13,7 @@ namespace Rose
 
         coreLogger = spdlog::stdout_color_mt("ROSE");
         coreLogger->set_level(spdlog::level::trace);
-        
+
         clientLogger = spdlog::stdout_color_mt("APP");
         clientLogger->set_level(spdlog::level::trace);
     }
