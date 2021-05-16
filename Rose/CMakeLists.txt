@@ -11,11 +11,23 @@ target_sources(
     ${PROJECT_NAME} PRIVATE ${SOURCES}
 )
 
-message(${PROJECT_SOURCE_DIR}/3rd/spdlog/include)
-
 target_include_directories(${PROJECT_NAME} 
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/src
         ${PROJECT_SOURCE_DIR}/3rd/spdlog/include
+        ${PROJECT_SOURCE_DIR}/3rd/glfw/include
 )
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        glfw
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE ROSE_ENABLE_ASSERTS=1)
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(3rd/glfw)
 

@@ -6,6 +6,7 @@ namespace Rose
 {
     Application::Application()
     {
+        window = std::unique_ptr<Window>(Window::Create());  
     }
 
     Application::~Application()
@@ -14,9 +15,9 @@ namespace Rose
 
     void Application::Run()
     {
-        WindowResizeEvent e(1280, 720);
-        ROSE_TRACE(e);
-
-        while(true);
+        while(running)
+        {
+            window->OnUpdate();
+        }
     }
 } 
