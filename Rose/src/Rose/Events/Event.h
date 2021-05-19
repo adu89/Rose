@@ -3,6 +3,7 @@
 #include "Rose/Core.h"
 
 #include <string>
+#include <sstream>
 #include <functional>
 
 namespace Rose
@@ -46,8 +47,7 @@ namespace Rose
             return GetCategoryFlags() & category;
         }
 
-    protected:
-        bool handled = false;
+        bool Handled = false;
     };
 
     class EventDispatcher
@@ -65,7 +65,7 @@ namespace Rose
         {
             if(event.GetEventType() == T::GetStaticType())
             {
-                event.handled = func(*(T*)&event);
+                event.Handled = func(*(T*)&event);
                 return true;
             }
             return false;
