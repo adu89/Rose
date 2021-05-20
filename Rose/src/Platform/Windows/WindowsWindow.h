@@ -3,7 +3,6 @@
 #include "Rose/Window.h"
 
 #include "GLFW/glfw3.h"
-
 namespace Rose
 {
     class WindowsWindow : public Window

@@ -26,7 +26,11 @@ target_link_libraries(${PROJECT_NAME}
         OpenGL::GL
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE ROSE_ENABLE_ASSERTS=1)
+target_compile_definitions(${PROJECT_NAME} 
+    PRIVATE 
+        ROSE_ENABLE_ASSERTS=1
+        GLFW_INCLUDE_NONE=1
+)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)

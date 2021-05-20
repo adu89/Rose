@@ -18,6 +18,9 @@ namespace Rose
         void OnEvent(Event& e);
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
+
+        inline static Application* Get() { return *instance; }
+        inline Window& GetWindow() { return *window; }
     private:
         bool OnWindowClose(WindowCloseEvent& event);
 
@@ -25,6 +28,8 @@ namespace Rose
         bool running = true;
 
         LayerStack layerStack;
+    private:
+        static Application* instance;
     };
 
     Application* CreateApplication();

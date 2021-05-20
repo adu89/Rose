@@ -6,6 +6,8 @@
 #include "Rose/Events/KeyEvent.h"
 #include "Rose/Events/MouseEvent.h"
 
+#include <glad/glad.h>
+
 namespace Rose
 {
     static bool GLFWInitialised = false;
@@ -49,6 +51,10 @@ namespace Rose
 
         window = glfwCreateWindow((int)props.Width, (int)props.Height, data.Title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(window);
+
+        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        ROSE_CORE_ASSERT(status, "Failed to initialise glad!");
+
         glfwSetWindowUserPointer(window, &data);
         SetVSync(true);
 
