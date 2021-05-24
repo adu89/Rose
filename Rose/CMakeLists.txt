@@ -17,6 +17,7 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/3rd/spdlog/include
         ${PROJECT_SOURCE_DIR}/3rd/glfw/include
         ${PROJECT_SOURCE_DIR}/3rd/glad/include
+        ${PROJECT_SOURCE_DIR}/3rd/glm
 )
 
 target_link_libraries(${PROJECT_NAME}

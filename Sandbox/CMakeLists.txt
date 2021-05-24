@@ -16,6 +16,7 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/Rose/src
         ${CMAKE_SOURCE_DIR}/Rose/3rd/spdlog/include
+        ${CMAKE_SOURCE_DIR}/Rose/3rd/glm
 
 )
 

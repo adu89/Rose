@@ -19,7 +19,7 @@ namespace Rose
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
 
-        inline static Application* Get() { return *instance; }
+        inline static Application* Get() { return instance; }
         inline Window& GetWindow() { return *window; }
     private:
         bool OnWindowClose(WindowCloseEvent& event);

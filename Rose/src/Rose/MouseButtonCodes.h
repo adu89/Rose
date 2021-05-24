@@ -1,0 +1,15 @@
+#pragma once
+
+//From glfw3.h
+#define ROSE_MOUSE_BUTTON_1         0
+#define ROSE_MOUSE_BUTTON_2         1
+#define ROSE_MOUSE_BUTTON_3         2
+#define ROSE_MOUSE_BUTTON_4         3
+#define ROSE_MOUSE_BUTTON_5         4
+#define ROSE_MOUSE_BUTTON_6         5
+#define ROSE_MOUSE_BUTTON_7         6
+#define ROSE_MOUSE_BUTTON_8         7
+#define ROSE_MOUSE_BUTTON_LAST      ROSE_MOUSE_BUTTON_8
+#define ROSE_MOUSE_BUTTON_LEFT      ROSE_MOUSE_BUTTON_1
+#define ROSE_MOUSE_BUTTON_RIGHT     ROSE_MOUSE_BUTTON_2
+#define ROSE_MOUSE_BUTTON_MIDDLE    ROSE_MOUSE_BUTTON_3
