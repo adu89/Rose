@@ -4,7 +4,6 @@ namespace Rose
 {
     LayerStack::LayerStack()
     {
-        layerInsert = layers.begin();
     }
 
     LayerStack::~LayerStack()
@@ -15,7 +14,8 @@ namespace Rose
 
     void LayerStack::PushLayer(Layer* layer)
     {
-        layerInsert = layers.emplace(layerInsert, layer);
+        layers.emplace(layers.begin() + layerInsertIndex, layer);
+        layerInsertIndex++;
     }
 
     void LayerStack::PushOverlay(Layer* layer)
@@ -29,7 +29,7 @@ namespace Rose
         if(it != layers.end())
         {
             layers.erase(it);
-            layerInsert--;
+            layerInsertIndex--;
         }
     }
 

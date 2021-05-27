@@ -3,6 +3,8 @@
 #include "Window.h"
 #include "Events/ApplicationEvent.h"
 #include "LayerStack.h"
+#include "Rose/Renderer/Shader.h"
+#include "Rose/Renderer/Buffer.h"
 
 #include <memory>
 
@@ -28,6 +30,12 @@ namespace Rose
         bool running = true;
 
         LayerStack layerStack;
+
+        unsigned int vertexArray;
+
+        std::unique_ptr<Shader> shader;
+        std::unique_ptr<VertexBuffer> vertexBuffer;
+        std::unique_ptr<IndexBuffer> indexBuffer;
     private:
         static Application* instance;
     };

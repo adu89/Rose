@@ -5,8 +5,7 @@
 #include "Rose/Events/ApplicationEvent.h"
 #include "Rose/Events/KeyEvent.h"
 #include "Rose/Events/MouseEvent.h"
-
-#include <glad/glad.h>
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Rose
 {
@@ -38,7 +37,7 @@ namespace Rose
         data.Height = props.Height;
 
         ROSE_CORE_INFO("Creating window {0}, ({1}, {2})", props.Title, props.Width, props.Height);
-
+        
         if(!GLFWInitialised)
         {
             int success = glfwInit();
@@ -50,10 +49,9 @@ namespace Rose
         }
 
         window = glfwCreateWindow((int)props.Width, (int)props.Height, data.Title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(window);
-
-        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        ROSE_CORE_ASSERT(status, "Failed to initialise glad!");
+        
+        context = new OpenGLContext(window); 
+        context->Init();
 
         glfwSetWindowUserPointer(window, &data);
         SetVSync(true);
@@ -149,7 +147,7 @@ namespace Rose
     void WindowsWindow::OnUpdate()
     {
         glfwPollEvents();
-        glfwSwapBuffers(window);
+        context->SwapBuffers();
     }
 
     void WindowsWindow::SetVSync(bool enabled)
