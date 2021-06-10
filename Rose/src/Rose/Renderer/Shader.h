@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <glm/glm.hpp>
+
 namespace Rose {
     class Shader 
     {
@@ -11,6 +13,8 @@ namespace Rose {
 
         void Bind();
         void UnBind();
+
+        void UploadUniforMat4(const std::string& name, const glm::mat4& matrix);
     private:
         uint32_t rendererId;
     };

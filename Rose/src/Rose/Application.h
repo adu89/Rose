@@ -3,8 +3,10 @@
 #include "Window.h"
 #include "Events/ApplicationEvent.h"
 #include "LayerStack.h"
-#include "Rose/Renderer/Shader.h"
-#include "Rose/Renderer/Buffer.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Buffer.h"
+#include "Renderer/VertexArray.h"
+#include "Core/Timestep.h"
 
 #include <memory>
 
@@ -25,19 +27,13 @@ namespace Rose
         inline Window& GetWindow() { return *window; }
     private:
         bool OnWindowClose(WindowCloseEvent& event);
-
         std::unique_ptr<Window> window;
         bool running = true;
-
         LayerStack layerStack;
-
-        unsigned int vertexArray;
-
-        std::unique_ptr<Shader> shader;
-        std::unique_ptr<VertexBuffer> vertexBuffer;
-        std::unique_ptr<IndexBuffer> indexBuffer;
+        float lastFrameTime = 0.0f;
     private:
         static Application* instance;
+
     };
 
     Application* CreateApplication();

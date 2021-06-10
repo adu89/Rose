@@ -1,17 +1,20 @@
 #pragma once
 
-namespace Rose {
-    enum class RendererAPI 
-    {
-        None = 0,
-        OpenGL = 1     
-    };
+#include "RenderCommand.h"
+#include "Shader.h"
+#include <glm/glm.hpp>
 
+namespace Rose {
     class Renderer
     { 
     public:
-        inline static RendererAPI GetApi() { return rendererAPI; }
+        static void BeginScene(glm::mat4& camera);
+        static void EndScene();
+ 
+        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray); 
+
+        inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:
-        static RendererAPI rendererAPI;
+        static glm::mat4 camera;
     };
 }

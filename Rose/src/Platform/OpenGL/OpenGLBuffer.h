@@ -9,10 +9,14 @@ namespace Rose {
         OpenGLVertexBuffer(float* vertices, uint32_t size);
         virtual ~OpenGLVertexBuffer();
 
-        void Bind() const override;
-        void UnBind() const override;
+        virtual void Bind() const override;
+        virtual void UnBind() const override;
+
+        virtual void SetLayout(const BufferLayout& bufferLayout) override { layout = bufferLayout; }
+        virtual const BufferLayout& GetLayout() const override { return layout; }
     private:
         uint32_t rendererId;
+        BufferLayout layout;
     };
     
     class OpenGLIndexBuffer : public IndexBuffer
@@ -21,8 +25,8 @@ namespace Rose {
         OpenGLIndexBuffer(uint32_t* indices , uint32_t count);
         virtual ~OpenGLIndexBuffer();
 
-        void Bind() const override;
-        void UnBind() const override;
+        virtual void Bind() const override;
+        virtual void UnBind() const override;
 
         uint32_t GetCount() const override { return count; }
     private:

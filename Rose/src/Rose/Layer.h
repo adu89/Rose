@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+
+#include "Core/Timestep.h"
 #include "Events/Event.h"
 
 namespace Rose
@@ -13,7 +15,7 @@ namespace Rose
 
         virtual void OnAttach() {};
         virtual void OnDetach() {};
-        virtual void OnUpdate() {};
+        virtual void OnUpdate(Timestep ts) {};
         virtual void OnEvent(Event& event) {};
 
         inline const std::string& GetName() const { return debugName; }
