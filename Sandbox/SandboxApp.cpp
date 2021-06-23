@@ -20,12 +20,12 @@ public:
 
         auto* app = Rose::Application::Get();
         glm::mat4 camera(glm::ortho(0.0f, (float)app->GetWindow().GetWidth(), (float)app->GetWindow().GetHeight(), 0.0f, -1.0f, 1.0f));
+        
         Rose::Renderer::BeginScene(camera);
 
         uiState.MousePosition = Rose::Input::GetMousePosition();
         uiState.IsMouseDown = Rose::Input::IsMouseButtonPressed(0);
         uiState.HotItem = 0;
-
 
         if(uiState.IsMouseDown)
             ROSE_ERROR("MOUSE_BUTTON_PRESSED");
@@ -35,14 +35,10 @@ public:
         if(Rose::Widgets::Button(1, rectangle, uiState))
             ROSE_INFO("Button clicked");
 
-        Rose::Rectangle rectangle2(400, 400, 100, 100);
+        Rose::Rectangle rectangle2(rectangle.GetRight(), rectangle.GetY(), 100, 100);
 
         if(Rose::Widgets::Button(2, rectangle2, uiState))
             ROSE_INFO("Button clicked");
-
-        // Rose::Renderer::Submit(shader2, squareVertexArray);
-            
-        // Rose::Renderer::Submit(shader, vertexArray);
             
         if(!uiState.IsMouseDown)
         {

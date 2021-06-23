@@ -24,10 +24,15 @@ namespace Rose {
             return false;
         }
 
-        float GetX() const { return x; };
-        float GetY() const { return y; };
-        float GetWidth() const { return width; };
-        float GetHeight() const { return height; };
+        float GetX() const { return x; }
+        float GetY() const { return y; }
+        float GetWidth() const { return width; }
+        float GetHeight() const { return height; }
+
+        float GetLeft() const { return x; }
+        float GetRight() const { return x + width; }
+        float GetTop() const { return y; }
+        float GetBottom() const { return x + height; }
 
     private:
         float x;
