@@ -1,44 +1,49 @@
-#include "WindowsInput.h"
-
+#include "Rose/Input.h"
 #include "Rose/Application.h"
 
 #include <GLFW/glfw3.h>
 
 namespace Rose
 {
-     Input* Input::instance = new WindowsInput();
-
-    bool WindowsInput::IsKeyPressedImpl(int keycode)
+    bool Input::IsKeyPressed(int keycode)
     {
         auto window = static_cast<GLFWwindow*>(Application::Get()->GetWindow().GetNativeWindow());
         auto state = glfwGetKey(window, keycode);
         return state == GLFW_PRESS || state == GLFW_REPEAT; 
     }
 
-    bool IsMouseButtonPressedImpl(int button)
+    bool Input::IsMouseButtonPressed(int button)
     {
         auto window = static_cast<GLFWwindow*>(Application::Get()->GetWindow().GetNativeWindow());
         auto state = glfwGetMouseButton(window, button);
         return state == GLFW_PRESS; 
     }
 
-    std::pair<float, float> GetMousePositionImpl() 
+    MousePosition Input::GetMousePosition() 
     {
         auto window = static_cast<GLFWwindow*>(Application::Get()->GetWindow().GetNativeWindow());
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
-        return { (float)xPos, (float)yPos };
+        return MousePosition((float)xPos, (float)yPos);
     }
 
-    float GetMouseXImpl()
+    float Input::GetMouseX()
     {
-        auto[x, y] = GetMousePositionImpl();
+        auto[x, y] = GetMousePosition();
         return x;   
     }
 
-    float GetMouseYImpl()
+    float Input::GetMouseY()
     {
-        auto[x, y] = GetMousePositionImpl();
+        auto[x, y] = GetMousePosition();
         return y;  
+    }
+
+    std::pair<int, int> Input::GetWindowSize()
+    {
+        auto window = static_cast<GLFWwindow*>(Application::Get()->GetWindow().GetNativeWindow());
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        return { width, height };
     }
 }

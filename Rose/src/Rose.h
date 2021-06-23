@@ -13,4 +13,9 @@
 #include "Rose/Renderer/Shader.h"
 #include "Rose/Renderer/VertexArray.h"
 
+#include "Rose/Graphics/Graphics.h"
+#include "Rose/Graphics/Colors.h"
+#include "Rose/Geometry/Rectangle.h"
+#include "Rose/Widgets/Widgets.h"
+
 #include "Rose/EntryPoint.h"

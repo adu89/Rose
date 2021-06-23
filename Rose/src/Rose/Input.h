@@ -4,21 +4,24 @@
 
 namespace Rose 
 {
+    struct MousePosition
+    {
+        MousePosition(float x, float y) 
+            : X(x), Y(y) 
+        {
+        }
+
+        float X;
+        float Y;
+    };
     class Input 
     {
     public:
-        static bool IsKeyPressed(int keycode) { return instance->IsKeyPressedImpl(keycode); }
-        static bool IsMouseButtonPressed(int button) { return instance->IsMouseButtonPressedImpl(button); }
-        static std::pair<float, float> GetMousePosition() { return instance->GetMousePositionImpl(); }
-        static float GetMouseX() { return instance->GetMouseXImpl(); }
-        static float GetMouseY() { return instance->GetMouseYImpl(); }
-    protected:
-        virtual bool IsKeyPressedImpl(int keycode) = 0;
-        virtual bool IsMouseButtonPressedImpl(int button) = 0;
-        virtual std::pair<float, float> GetMousePositionImpl() = 0;
-        virtual float GetMouseXImpl() = 0;
-        virtual float GetMouseYImpl() = 0;
-    private:
-        static Input* instance;
+        static bool IsKeyPressed(int keycode);
+        static bool IsMouseButtonPressed(int button);
+        static MousePosition GetMousePosition();
+        static float GetMouseX();
+        static float GetMouseY();
+        static std::pair<int, int> GetWindowSize();
     };  
 }
