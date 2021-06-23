@@ -7,6 +7,3 @@
 [submodule "Rose/3rd/glm"]
 	path = Rose/3rd/glm
 	url = git@github.com:g-truc/glm.git
-[submodule "Rose/3rd/freetype"]
-	path = Rose/3rd/freetype
-	url = git@github.com:freetype/freetype.git
