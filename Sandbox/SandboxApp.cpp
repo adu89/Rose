@@ -39,6 +39,8 @@ public:
 
         if(Rose::Widgets::Button(2, rectangle2, uiState))
             ROSE_INFO("Button clicked");
+
+        Rose::Graphics::DrawText(100, 100, 1, "Andrew Costa Text Rendering Example", font);
             
         if(!uiState.IsMouseDown)
         {
@@ -61,6 +63,7 @@ public:
 
     private:
         Rose::UIState uiState;
+        Rose::Font font;
         
 };
 class SandboxApp : public Rose::Application

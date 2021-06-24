@@ -12,12 +12,13 @@ target_sources(
 )
 
 target_include_directories(${PROJECT_NAME} 
-    PRIVATE 
+    PUBLIC 
         ${PROJECT_SOURCE_DIR}/src
         ${PROJECT_SOURCE_DIR}/3rd/spdlog/include
         ${PROJECT_SOURCE_DIR}/3rd/glfw/include
         ${PROJECT_SOURCE_DIR}/3rd/glad/include
         ${PROJECT_SOURCE_DIR}/3rd/glm
+        ${PROJECT_SOURCE_DIR}/3rd/ft/include
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -25,6 +26,7 @@ target_link_libraries(${PROJECT_NAME}
         glfw
         glad
         OpenGL::GL
+        ${PROJECT_SOURCE_DIR}/3rd/ft/lib/freetype.lib
 )
 
 target_compile_definitions(${PROJECT_NAME} 

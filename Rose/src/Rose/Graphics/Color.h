@@ -7,9 +7,9 @@ namespace Rose {
     {
     public:
         Color(int r, int g, int b, float alpha = 1.0f)
-            : r(r), g(g), b(b), alpha(alpha)
+            : r(r), g(g), b(b), alpha(alpha * 255.0f) //will fix alpha stuff in future
         {
-            ROSE_CORE_ASSERT(alpha <= 1.0f || alpha >= 0.0f, "Invalid alpha value.");
+            //ROSE_CORE_ASSERT(alpha <= 1.0f || alpha >= 0.0f, "Invalid alpha value.");
         }
 
         ~Color() {}

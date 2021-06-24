@@ -15,6 +15,7 @@
 
 #include "Rose/Graphics/Graphics.h"
 #include "Rose/Graphics/Colors.h"
+#include "Rose/Graphics/Font.h"
 #include "Rose/Geometry/Rectangle.h"
 #include "Rose/Widgets/Widgets.h"
 
