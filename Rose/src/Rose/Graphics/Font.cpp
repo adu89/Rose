@@ -1,9 +1,13 @@
 #include "Font.h"
 
 #include <glad/glad.h>
+#include "Rose/Log.h"
+
+#include <cmath>
 
 namespace Rose {
-    Font::Font() 
+    Font::Font(int size)
+        : size(size)
     {
         FT_Library ft;
         if(FT_Init_FreeType(&ft)) {
@@ -11,19 +15,17 @@ namespace Rose {
         }
         
         FT_Face face;
-        if (FT_New_Face(ft, "BigShouldersStencilDisplay-Bold.ttf", 0, &face))
+        if (FT_New_Face(ft, "ARB 67 ModernRomanJUL-37DTPW01.ttf", 0, &face))
         {
             ROSE_CORE_ASSERT(false, "Failed to load font.");
         }    
 
-        FT_Set_Pixel_Sizes(face, 0, 48);
+        FT_Set_Pixel_Sizes(face, 0, size);
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         for(unsigned char c = 0; c < 128; c++)
         {
-            ROSE_INFO(c);
-
             if(FT_Load_Char(face, c, FT_LOAD_RENDER))
             {
                 ROSE_CORE_ASSERT(false, "Failed to load glyph.");
@@ -54,11 +56,25 @@ namespace Rose {
                 texture, 
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                face->glyph->advance.x
+                face->glyph->advance.x,
+                (face->glyph->metrics.height >> 6) - face->glyph->bitmap_top
             };
 
             characters.insert(std::pair<char, Character>(c, character));         
+
+            // if ((face->glyph->metrics.height >> 6) - face->glyph->bitmap_top > (int)maxDescent) {
+            //     maxDescent = (face->glyph->metrics.height >> 6) - face->glyph->bitmap_top;
+            // }
         }
+
+        // float x = static_cast<float>(face->ascender) / static_cast<float>(face->units_per_EM);
+
+        // auto y = face->size->metrics.ascender;
+        // auto z = face->size->metrics.descender;
+
+        // ROSE_CORE_INFO(maxDescent);
+        // ROSE_CORE_INFO(y);
+        // ROSE_CORE_INFO(z);
 
         FT_Done_Face(face);
         FT_Done_FreeType(ft);   
@@ -71,5 +87,41 @@ namespace Rose {
     const std::map<char, Character>& Font::GetCharacters() const
     {
         return characters;   
+    }
+    
+    const float Font::GetMaxBearingY(const std::string& str) const
+    {
+        float maxYBearing = 0.0f;
+        for(const char& c : str) {
+            auto character = characters.at(c);
+            if(character.Bearing.y > maxYBearing)
+                maxYBearing = character.Bearing.y;
+        }
+
+        return maxYBearing;
+    }
+    
+    const float Font::GetMinBearingY(const std::string& str) const
+    {
+        float minYBearing = 0.0f;
+        for(const char& c : str) {
+            auto character = characters.at(c);
+            if(character.Descent > minYBearing)
+                minYBearing = character.Descent;
+        }
+
+        return minYBearing;
+    }
+    
+    const float Font::GetStringWidth(const std::string& str) const
+    {
+        float stringWidth = 0.0f;
+        for(int i = 0; i < str.length(); ++i) {
+            auto character = characters.at(str[i]);
+            stringWidth += (i == 0 ? 0 : character.Bearing.x);
+            stringWidth += character.Advance >> 6;
+        }
+
+        return stringWidth;
     }
 }

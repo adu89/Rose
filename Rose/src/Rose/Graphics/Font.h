@@ -6,6 +6,7 @@
 #include "Rose/Log.h"
 
 #include <glm/glm.hpp>
+#include <string>
 #include <map>
 
 namespace Rose {
@@ -15,17 +16,23 @@ namespace Rose {
         glm::ivec2 Size;
         glm::ivec2 Bearing;
         unsigned int Advance;
+        float Descent;
     };
 
     class Font
     {
     public:
-        Font();
+        Font(int size);
         ~Font();
 
         const std::map<char, Character>& GetCharacters() const;
+        const float GetSize() const;
+        const float GetMaxBearingY(const std::string& str) const;
+        const float GetMinBearingY(const std::string& str) const;
+        const float GetStringWidth(const std::string& str) const;
 
     private:
+        float size;
         std::map<char, Character> characters;
     };
 }

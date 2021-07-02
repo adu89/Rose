@@ -11,9 +11,10 @@ namespace Rose {
     class Graphics
     {
     public:
-        static void DrawRectangle(float x, float y, float w, float h, float r, float g, float b, float a);
+        static void DrawRectangle(float x, float y, float w, float h, const Color& c);
         static void DrawRectangle(const Rectangle& rectangle, const Color& c);
-        static void DrawText(float x, float y, float scale, const std::string& text, const Font& font);
+        static void DrawText(float x, float y, const std::string& text, const Font& font);
+        static void DrawText(const Rectangle& boundingRect, const std::string& text, const Font& font);
     private: 
         static std::string vertexSrc;
         static std::string fragmentSrc;

@@ -9,7 +9,7 @@ class ExampleLayer : public Rose::Layer
 {
 public:
     ExampleLayer()
-        : Layer("Example")
+        : Layer("Example"), font(100)
     { 
     }
 
@@ -30,17 +30,12 @@ public:
         if(uiState.IsMouseDown)
             ROSE_ERROR("MOUSE_BUTTON_PRESSED");
 
-        Rose::Rectangle rectangle(100, 100, 100, 100);
+        Rose::Rectangle rectangle(100, 100, 300, 150);
 
         if(Rose::Widgets::Button(1, rectangle, uiState))
             ROSE_INFO("Button clicked");
 
-        Rose::Rectangle rectangle2(rectangle.GetRight(), rectangle.GetY(), 100, 100);
-
-        if(Rose::Widgets::Button(2, rectangle2, uiState))
-            ROSE_INFO("Button clicked");
-
-        Rose::Graphics::DrawText(100, 100, 1, "Andrew Costa Text Rendering Example", font);
+        Rose::Graphics::DrawText(rectangle, "Quit", font);
             
         if(!uiState.IsMouseDown)
         {

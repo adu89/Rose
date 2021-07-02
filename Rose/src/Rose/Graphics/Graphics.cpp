@@ -9,6 +9,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Rose/Application.h"
+
+#include "Platform/OpenGL/OpenGLShader.h"
+
 namespace Rose {
     std::string Graphics::textVertexSrc(R"(
         #version 330 core
@@ -45,17 +48,14 @@ namespace Rose {
         #version 330 core
 
         layout(location = 0) in vec3 position;
-        layout(location = 1) in vec4 color;
 
         uniform mat4 u_ViewProjection;
 
         out vec3 v_position;
-        out vec4 v_color;
 
         void main()
         {
             v_position = position;
-            v_color = color;
             gl_Position = u_ViewProjection * vec4(position, 1.0);
         }
     )");
@@ -66,21 +66,23 @@ namespace Rose {
         in vec4 v_color;
         out vec4 color;
 
+        uniform vec4 u_Color;
+
         void main()
         {
-            color = v_color / 255;
+            color = u_Color / 255;
         }
     )"); 
 
-    void Graphics::DrawRectangle(float x, float y, float w, float h, float r, float g, float b, float a) 
+    void Graphics::DrawRectangle(float x, float y, float w, float h, const Color& c) 
     {
         float z = 0.0f;
 
-        float vertices[4 * 7] = {
-             x    , y + h, z, r, g, b, a,
-             x + w, y + h, z, r, g, b, a,
-             x + w, y    , z, r, g, b, a,        
-             x    , y    , z, r, g, b, a        
+        float vertices[4 * 3] = {
+             x    , y + h, z, 
+             x + w, y + h, z, 
+             x + w, y    , z,         
+             x    , y    , z        
         };
 
         std::shared_ptr<VertexArray> va;
@@ -90,8 +92,7 @@ namespace Rose {
         vb.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
         BufferLayout layout = {
-            { ShaderDataType::Float3, "position" },
-            { ShaderDataType::Float4, "color" }
+            { ShaderDataType::Float3, "position" }
         };
 
         vb->SetLayout(layout);        
@@ -108,17 +109,20 @@ namespace Rose {
         va->SetIndexBuffer(ib);
 
         std::shared_ptr<Shader> s;
-        s.reset(new Shader(Graphics::vertexSrc, Graphics::fragmentSrc));
+        s.reset(Shader::Create(Graphics::vertexSrc, Graphics::fragmentSrc));
+
+        s->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(s)->UploadUniformFloat4("u_Color", glm::vec4(c.GetR(), c.GetG(), c.GetB(), c.GetAlpha()));
 
         Rose::Renderer::Submit(s, va);   
     }
     
     void Graphics::DrawRectangle(const Rectangle& r, const Color& c) 
     {
-        DrawRectangle(r.GetX(), r.GetY(), r.GetWidth(), r.GetHeight(), c.GetR(), c.GetG(), c.GetB(), c.GetAlpha());
+        DrawRectangle(r.GetX(), r.GetY(), r.GetWidth(), r.GetHeight(), c);
     }
     
-    void Graphics::DrawText(float x, float y, float scale, const std::string& text, const Font& font) 
+    void Graphics::DrawText(float x, float y, const std::string& text, const Font& font) 
     {
         // std::shared_ptr<VertexArray> va;
         // va.reset(VertexArray::Create());
@@ -127,7 +131,7 @@ namespace Rose {
         // vb.reset(VertexBuffer::Create());
 
         auto* app = Application::Get();
-        glm::mat4 camera(glm::ortho(0.0f, (float)app->GetWindow().GetWidth(), 0.0f, (float)app->GetWindow().GetHeight(), -1.0f, 1.0f));
+        glm::mat4 camera(glm::ortho(0.0f, (float)app->GetWindow().GetWidth(), (float)app->GetWindow().GetHeight(), 0.0f, -1.0f, 1.0f));
 
         unsigned int VAO, VBO;
         glGenVertexArrays(1, &VAO);
@@ -136,15 +140,15 @@ namespace Rose {
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0); 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);  
 
         std::shared_ptr<Shader> s;
-        s.reset(new Shader(Graphics::textVertexSrc, Graphics::textFragmentSrc));
+        s.reset(Shader::Create(Graphics::textVertexSrc, Graphics::textFragmentSrc));
 
         s->Bind();
-        s->UploadUniforMat4("u_ViewProjection", camera);
+        std::dynamic_pointer_cast<OpenGLShader>(s)->UploadUniforMat4("u_ViewProjection", camera);
 
         //glUniform3f(glGetUniformLocation(s., "textColor"), 1, 1, 1);
         glActiveTexture(GL_TEXTURE0);
@@ -155,22 +159,31 @@ namespace Rose {
             const std::map<char, Character>& characters = font.GetCharacters();
             const Character& c = characters.at(text[i]);
 
-            float xpos = x + c.Bearing.x * scale;
-            float ypos = y - (c.Size.y - c.Bearing.y) * scale;
+            float xpos = x + (i == 0 ? 0 : c.Bearing.x);
+            //float ypos = (y + font.GetSize() - c.Bearing.y - font.GetMaxDescent()) * scale;
+            float ypos = y - c.Bearing.y + font.GetMaxBearingY(text);
 
-            float w = c.Size.x * scale;
-            float h = c.Size.y * scale;
+            float w = c.Size.x;
+            float h = c.Size.y;
 
             // update VBO for each character
-            float vertices[6][4] = {
-                { xpos,     ypos + h,   0.0f, 0.0f },            
-                { xpos,     ypos,       0.0f, 1.0f },
-                { xpos + w, ypos,       1.0f, 1.0f },
+            // float vertices[6 * 4] = {
+            //     xpos,     ypos + h,   0.0f, 0.0f,            
+            //     xpos,     ypos,       0.0f, 1.0f,
+            //     xpos + w, ypos,       1.0f, 1.0f,
+            //     xpos,     ypos + h,   0.0f, 0.0f,
+            //     xpos + w, ypos,       1.0f, 1.0f,
+            //     xpos + w, ypos + h,   1.0f, 0.0f           
+            // }; 
 
-                { xpos,     ypos + h,   0.0f, 0.0f },
-                { xpos + w, ypos,       1.0f, 1.0f },
-                { xpos + w, ypos + h,   1.0f, 0.0f }           
-            }; 
+            float vertices[6 * 4] = {
+                xpos,     ypos + h,   0.0f, 1.0f,
+                xpos + w, ypos + h,   1.0f, 1.0f,
+                xpos + w, ypos    ,   1.0f, 0.0f,           
+                xpos + w, ypos    ,   1.0f, 0.0f,
+                xpos,     ypos    ,   0.0f, 0.0f,        
+                xpos,     ypos + h,   0.0f, 1.0f    
+            };             
 
             glBindTexture(GL_TEXTURE_2D, c.TextureId);
             // update content of VBO memory
@@ -180,7 +193,22 @@ namespace Rose {
             // render quad
             glDrawArrays(GL_TRIANGLES, 0, 6);
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            x += (c.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)                       
+            x += (c.Advance >> 6); // bitshift by 6 to get value in pixels (2^6 = 64)                       
         }
+    }
+    
+    void Graphics::DrawText(const Rectangle& boundingRect, const std::string& text, const Font& font) 
+    {
+        float textHeight = font.GetMaxBearingY(text) + font.GetMinBearingY(text);
+        float yOffset = (boundingRect.GetHeight() - textHeight) / 2.0f; 
+
+        ROSE_CORE_ASSERT(yOffset >= 0, "Y offset cannot be less than 0");    
+        
+        float textWidth = font.GetStringWidth(text);
+        float xOffset = (boundingRect.GetWidth() - textWidth) / 2.0f;    
+        
+        ROSE_CORE_ASSERT(xOffset >= 0, "X offset cannot be less than 0");    
+        
+        DrawText(boundingRect.GetX() + xOffset, boundingRect.GetY() + yOffset, text, font);
     }
 } 
