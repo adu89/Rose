@@ -36,7 +36,7 @@ namespace Rose {
 
             glGenTextures(1, &texture);
             glBindTexture(GL_TEXTURE_2D, texture);
-            glTexImage2D(
+             (
                 GL_TEXTURE_2D,
                 0,
                 GL_RED,
@@ -57,7 +57,8 @@ namespace Rose {
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
                 face->glyph->advance.x,
-                (face->glyph->metrics.height >> 6) - face->glyph->bitmap_top
+                (face->glyph->metrics.height >> 6) - face->glyph->bitmap_top,
+                face->glyph->bitmap.width
             };
 
             characters.insert(std::pair<char, Character>(c, character));         
@@ -118,8 +119,9 @@ namespace Rose {
         float stringWidth = 0.0f;
         for(int i = 0; i < str.length(); ++i) {
             auto character = characters.at(str[i]);
-            stringWidth += (i == 0 ? 0 : character.Bearing.x);
-            stringWidth += character.Advance >> 6;
+            // stringWidth += i == 0 ? 0 : character.Bearing.x;
+            // if(i == str.length()-1)
+                stringWidth += character.Advance >> 6;
         }
 
         return stringWidth;

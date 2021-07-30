@@ -17,11 +17,17 @@ namespace Rose {
         glm::ivec2 Bearing;
         unsigned int Advance;
         float Descent;
+        float Width;
     };
 
     class Font
     {
     public:
+        enum Justification
+        {
+            Centered
+        };
+
         Font(int size);
         ~Font();
 

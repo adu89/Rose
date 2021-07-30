@@ -14,7 +14,7 @@ namespace Rose {
         static void DrawRectangle(float x, float y, float w, float h, const Color& c);
         static void DrawRectangle(const Rectangle& rectangle, const Color& c);
         static void DrawText(float x, float y, const std::string& text, const Font& font);
-        static void DrawText(const Rectangle& boundingRect, const std::string& text, const Font& font);
+        static void DrawText(const Rectangle& boundingRect, const std::string& text, const Font& font, const Font::Justification& justification = Font::Justification::Centered);
     private: 
         static std::string vertexSrc;
         static std::string fragmentSrc;

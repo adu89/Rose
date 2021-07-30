@@ -3,6 +3,7 @@
 #include "Rose/Renderer/Renderer.h"
 #include "Rose/Renderer/VertexArray.h"
 #include "Rose/Renderer/Buffer.h"
+#include "Rose/Renderer/Texture.h"
 
 #include <memory>
 #include <glad/glad.h>
@@ -136,6 +137,7 @@ namespace Rose {
         unsigned int VAO, VBO;
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
+
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
@@ -159,7 +161,7 @@ namespace Rose {
             const std::map<char, Character>& characters = font.GetCharacters();
             const Character& c = characters.at(text[i]);
 
-            float xpos = x + (i == 0 ? 0 : c.Bearing.x);
+            float xpos = x + c.Bearing.x;
             //float ypos = (y + font.GetSize() - c.Bearing.y - font.GetMaxDescent()) * scale;
             float ypos = y - c.Bearing.y + font.GetMaxBearingY(text);
 
@@ -176,14 +178,26 @@ namespace Rose {
             //     xpos + w, ypos + h,   1.0f, 0.0f           
             // }; 
 
-            float vertices[6 * 4] = {
+            float vertices[4 * 6] = {
                 xpos,     ypos + h,   0.0f, 1.0f,
                 xpos + w, ypos + h,   1.0f, 1.0f,
                 xpos + w, ypos    ,   1.0f, 0.0f,           
                 xpos + w, ypos    ,   1.0f, 0.0f,
                 xpos,     ypos    ,   0.0f, 0.0f,        
                 xpos,     ypos + h,   0.0f, 1.0f    
-            };             
+            };    
+
+            std::shared_ptr<VertexArray> va;
+            va.reset(VertexArray::Create());
+
+            std::shared_ptr<VertexBuffer> vb;
+            vb.reset(VertexBuffer::Create(vertices, sizeof(vertices)));      
+
+            vb->SetLayout({
+                { ShaderDataType::Float4, "position" },
+            });   
+
+            va->AddVertexBuffer(vb);
 
             glBindTexture(GL_TEXTURE_2D, c.TextureId);
             // update content of VBO memory
@@ -197,7 +211,7 @@ namespace Rose {
         }
     }
     
-    void Graphics::DrawText(const Rectangle& boundingRect, const std::string& text, const Font& font) 
+    void Graphics::DrawText(const Rectangle& boundingRect, const std::string& text, const Font& font, const Font::Justification& justification) 
     {
         float textHeight = font.GetMaxBearingY(text) + font.GetMinBearingY(text);
         float yOffset = (boundingRect.GetHeight() - textHeight) / 2.0f; 
